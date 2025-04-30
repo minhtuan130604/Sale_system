@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sản phẩm yêu thích</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .favorites-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .favorite-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .favorite-item img {
+            width: 80px;
+            border-radius: 5px;
+        }
+
+        .favorite-item .info {
+            flex-grow: 1;
+            text-align: left;
+            padding-left: 15px;
+        }
+
+        .favorite-item .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="favorites-container">
+    <h2>❤️ Sản phẩm yêu thích</h2>
+
+    <div th:each="item : ${favoriteItems}" class="favorite-item">
+        <img th:src="${item.imageUrl}" alt="Sản phẩm">
+        <div class="info">
+            <h3 th:text="${item.name}"></h3>
+            <p th:text="${item.price} + ' VNĐ'"></p>
+        </div>
+        <div class="actions">
+            <button th:onclick="'window.location.href=\'/products/' + ${item.id} + '\''">Xem sản phẩm</button>
+            <button th:onclick="'window.location.href=\'/favorites/remove/' + ${item.id} + '\''">Xóa</button>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

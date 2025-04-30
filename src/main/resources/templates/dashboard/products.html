@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách sản phẩm</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="product-container">
+    <h2>🛍️ Sản phẩm</h2>
+
+    <!-- Bộ lọc & Tìm kiếm ngay trên danh mục sản phẩm -->
+    <div class="filter-bar">
+        <label>🔍 Tìm kiếm: <input type="text" id="searchInput"></label>
+
+        <label>🛒 Danh mục:
+            <select id="categorySelect">
+                <option value="">Tất cả</option>
+                <option value="phone">Điện thoại</option>
+                <option value="laptop">Laptop</option>
+                <option value="tv">TV</option>
+            </select>
+        </label>
+
+        <label>💰 Giá từ:
+            <input type="number" id="minPrice" placeholder="Từ">
+        </label>
+        <label>➡️ đến:
+            <input type="number" id="maxPrice" placeholder="Đến">
+        </label>
+        <button onclick="filterProducts()">Lọc</button>
+
+        <label>📊 Sắp xếp:
+            <select id="sortSelect">
+                <option value="">Mặc định</option>
+                <option value="asc">Giá thấp đến cao</option>
+                <option value="desc">Giá cao đến thấp</option>
+            </select>
+        </label>
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <div class="product-grid" id="productList">
+        <div th:each="product : ${products}" class="product-card">
+            <img th:src="${product.imageUrl}" alt="Hình ảnh sản phẩm">
+            <h4 th:text="${product.name}"></h4>
+            <p th:text="${product.price} + ' VNĐ'"></p>
+            <button>🛒 Mua ngay</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("searchInput").addEventListener("keyup", filterProducts);
+    document.getElementById("categorySelect").addEventListener("change", filterProducts);
+    document.getElementById("sortSelect").addEventListener("change", filterProducts);
+
+    function filterProducts() {
+        let keyword = document.getElementById("searchInput").value;
+        let category = document.getElementById("categorySelect").value;
+        let minPrice = document.getElementById("minPrice").value;
+        let maxPrice = document.getElementById("maxPrice").value;
+        let sort = document.getElementById("sortSelect").value;
+
+        fetch(`/products/filter?category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}&keyword=${keyword}`)
+            .then(response => response.json())
+            .then(data => updateProducts(data));
+    }
+
+    function updateProducts(products) {
+        let productList = document.getElementById("productList");
+        productList.innerHTML = "";
+
+        products.forEach(product => {
+            let productHTML = `<div class="product-card">
+                <img src="${product.imageUrl}" alt="Hình ảnh sản phẩm">
+                <h4>${product.name}</h4>
+                <p>${product.price} VNĐ</p>
+                <button>🛒 Mua ngay</button>
+            </div>`;
+            productList.innerHTML += productHTML;
+        });
+    }
+</script>
+
+</body>
+</html>

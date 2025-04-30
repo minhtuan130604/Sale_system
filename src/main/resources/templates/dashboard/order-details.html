@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Chi tiết đơn hàng</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .order-details-container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .order-info {
+        text-align: left;
+        padding: 10px 0;
+    }
+
+    .status {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="order-details-container">
+  <h2>📦 Chi tiết đơn hàng</h2>
+
+  <div class="order-info">
+    <p><strong>Mã đơn hàng:</strong> <span th:text="${order.id}"></span></p>
+    <p><strong>Sản phẩm:</strong> <span th:text="${order.productName}"></span></p>
+    <p><strong>Giá:</strong> <span th:text="${order.price} + ' VNĐ'"></span></p>
+    <p><strong>Ngày đặt:</strong> <span th:text="${order.orderDate}"></span></p>
+    <p><strong>Ngày giao dự kiến:</strong> <span th:text="${order.deliveryDate}"></span></p>
+    <p><strong>Trạng thái:</strong> <span class="status" th:text="${order.status}"></span></p>
+  </div>
+
+  <button th:onclick="'window.location.href=\'/dashboard/orders\''">🔙 Quay lại danh sách đơn hàng</button>
+</div>
+
+</body>
+</html>

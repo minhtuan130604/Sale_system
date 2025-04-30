@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Hỗ trợ khách hàng</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="support-container">
+  <h2>📢 Hệ thống hỗ trợ khách hàng</h2>
+
+  <!-- Biểu mẫu gửi yêu cầu hỗ trợ -->
+  <h3>📝 Gửi yêu cầu hỗ trợ</h3>
+  <form method="post" action="/dashboard/support" th:onsubmit="return submitForm(event)">
+    <label>Tên bạn: <input type="text" name="username" required></label>
+    <label>Nội dung yêu cầu: <textarea name="message" required></textarea></label>
+    <button type="submit">Gửi yêu cầu</button>
+  </form>
+
+  <!-- Thông báo thành công -->
+  <div id="success-message" style="display: none; color: green; font-weight: bold;">
+    ✅ Yêu cầu đã được gửi thành công!
+  </div>
+
+  <!-- Danh sách yêu cầu hỗ trợ -->
+  <h3>📌 Lịch sử yêu cầu hỗ trợ</h3>
+  <table id="history-table">
+    <tr>
+      <th>ID</th>
+      <th>Tên người gửi</th>
+      <th>Nội dung</th>
+      <th>Trạng thái</th>
+      <th>Ngày gửi</th>
+    </tr>
+    <tr th:each="request : ${supportRequests}">
+      <td th:text="${request.id}"></td>
+      <td th:text="${request.username}"></td>
+      <td th:text="${request.message}"></td>
+      <td th:text="${request.status}"></td>
+      <td th:text="${request.requestDate}"></td>
+    </tr>
+  </table>
+
+</div>
+
+<script>
+  function submitForm(event) {
+      event.preventDefault(); // Ngăn điều hướng trang
+      let form = event.target;
+
+      fetch(form.action, {
+          method: "POST",
+          body: new FormData(form)
+      }).then(response => {
+          if (response.ok) {
+              document.getElementById("success-message").style.display = "block"; // Hiển thị thông báo
+              form.reset(); // Xóa nội dung biểu mẫu
+
+              // Tự động cập nhật danh sách yêu cầu hỗ trợ mà không tải lại trang
+              fetch("/dashboard/support/history")
+                  .then(res => res.json())
+                  .then(data => updateHistory(data));
+          }
+      });
+
+      return false;
+  }
+
+  function updateHistory(requests) {
+      let table = document.getElementById("history-table");
+      table.innerHTML = "<tr><th>ID</th><th>Tên người gửi</th><th>Nội dung</th><th>Trạng thái</th><th>Ngày gửi</th></tr>";
+
+      requests.forEach(request => {
+          let row = `<tr>
+              <td>${request.id}</td>
+              <td>${request.username}</td>
+              <td>${request.message}</td>
+              <td>${request.status}</td>
+              <td>${request.requestDate}</td>
+          </tr>`;
+          table.innerHTML += row;
+      });
+  }
+</script>
+
+</body>
+</html>
